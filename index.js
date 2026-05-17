@@ -99,10 +99,10 @@ function renderSchedule() {
 
     weekLabel.textContent = `${formatDate(weekDates[0])} → ${formatDate(weekDates[6])}`;
 
+    // Générer des créneaux sur l'heure uniquement (08:00, 09:00, ...)
     const timeslots = [];
-    for (let hour = 8; hour <= 18; hour += 1) {
+    for (let hour = 8; hour <= 17; hour += 1) {
         timeslots.push(`${padTime(hour)}:00`);
-        if (hour < 18) timeslots.push(`${padTime(hour)}:30`);
     }
 
     const headerHtml = ['<tr>', '<th>Heure</th>', ...roomsToShow.map((room) => `<th>${room.nom}</th>`), '</tr>'].join('');
@@ -160,15 +160,31 @@ function clearMessage() {
 }
 
 function validateReservation(data) {
-    if (data.heure_debut >= data.heure_fin) {
+    const startMin = timeStringToMinutes(data.heure_debut);
+    const endMin = timeStringToMinutes(data.heure_fin);
+
+    if (startMin >= endMin) {
         return 'L’heure de fin doit être après l’heure de début.';
     }
+
+    // Exiger des créneaux alignés sur l'heure (ex: 08:00 - 09:00)
+    if (startMin % 60 !== 0 || endMin % 60 !== 0) {
+        return "Les créneaux doivent commencer et finir à l'heure (ex: 08:00 - 09:00).";
+    }
+
+    // Durée minimale 1 heure
+    if (endMin - startMin < 60) {
+        return "La durée minimale d'une réservation est d'1 heure.";
+    }
+
     if (data.date_reservation < formatDate(new Date())) {
         return 'Vous ne pouvez pas réserver une date passée.';
     }
+
     if (isConflict(data)) {
         return 'Conflit détecté : la salle est déjà réservée à cette heure.';
     }
+
     return null;
 }
 

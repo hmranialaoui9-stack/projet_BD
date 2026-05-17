@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoomBook - Réservation de salles</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -61,11 +63,11 @@
                         <div class="time-row">
                             <div>
                                 <label for="start">Heure début</label>
-                                <input type="time" id="start" required>
+                                <input type="time" id="start" required step="3600" min="08:00" max="17:00">
                             </div>
                             <div>
                                 <label for="end">Heure fin</label>
-                                <input type="time" id="end" required>
+                                <input type="time" id="end" required step="3600" min="09:00" max="18:00">
                             </div>
                         </div>
                         <label for="title">Titre</label>
